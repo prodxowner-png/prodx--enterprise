@@ -1,0 +1,35 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128;
+    }
+
+    // Allow test connection document for health-check probe
+    match /test/{docId} {
+      allow read, write: if true;
+    }
+
+    // Products catalog and inventory stock
+    match /products/{productId} {
+      allow read: if true;
+      allow create, update: if isValidId(productId) && request.resource.data.price >= 0;
+      allow delete: if isValidId(productId);
+    }
+
+    // Sales transactions and orders
+    match /orders/{orderId} {
+      allow read: if true;
+      allow create: if isValidId(orderId) && request.resource.data.total >= 0;
+      allow update: if isValidId(orderId);
+      allow delete: if false;
+    }
+
+    // Realtime terminal synchronization heartbeats and cashier presence
+    match /syncHeartbeats/{terminalId} {
+      allow read: if true;
+      allow write: if isValidId(terminalId);
+    }
+  }
+}

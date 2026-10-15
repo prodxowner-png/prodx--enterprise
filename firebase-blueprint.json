@@ -1,0 +1,173 @@
+{
+  "entities": {
+    "product": {
+      "title": "Product",
+      "description": "Inventory product item for the POS system",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique product SKU or identifier",
+          "maxLength": 64
+        },
+        "name": {
+          "type": "string",
+          "description": "Product display name",
+          "maxLength": 128
+        },
+        "barcode": {
+          "type": "string",
+          "description": "Barcode or scan code",
+          "maxLength": 64
+        },
+        "price": {
+          "type": "number",
+          "description": "Authoritative selling price in THB"
+        },
+        "cost": {
+          "type": "number",
+          "description": "Unit cost in THB"
+        },
+        "stock": {
+          "type": "number",
+          "description": "Current on-hand inventory quantity"
+        },
+        "minStock": {
+          "type": "number",
+          "description": "Low-stock alert threshold"
+        },
+        "category": {
+          "type": "string",
+          "description": "Product category",
+          "maxLength": 64
+        },
+        "image": {
+          "type": "string",
+          "description": "Product thumbnail or icon identifier",
+          "maxLength": 256
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "ISO timestamp of last update"
+        }
+      },
+      "required": ["id", "name", "price", "stock", "category"]
+    },
+    "order": {
+      "title": "Order",
+      "description": "Authoritative sales order record",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique order receipt number",
+          "maxLength": 64
+        },
+        "orderNumber": {
+          "type": "string",
+          "description": "Sequential human-readable receipt number",
+          "maxLength": 32
+        },
+        "cashier": {
+          "type": "string",
+          "description": "Cashier user name or email",
+          "maxLength": 128
+        },
+        "subtotal": {
+          "type": "number",
+          "description": "Calculated subtotal before discount/tax"
+        },
+        "tax": {
+          "type": "number",
+          "description": "VAT / tax amount"
+        },
+        "discount": {
+          "type": "number",
+          "description": "Discount applied"
+        },
+        "total": {
+          "type": "number",
+          "description": "Final total charged"
+        },
+        "received": {
+          "type": "number",
+          "description": "Tendered amount received from customer"
+        },
+        "change": {
+          "type": "number",
+          "description": "Change returned to customer"
+        },
+        "paymentMethod": {
+          "type": "string",
+          "description": "Cash, PromptPay QR, Card, or Transfer",
+          "maxLength": 32
+        },
+        "status": {
+          "type": "string",
+          "description": "Order completion status: completed, voided, refunded",
+          "maxLength": 32
+        },
+        "itemCount": {
+          "type": "number",
+          "description": "Total quantity of items sold"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "ISO timestamp of creation"
+        }
+      },
+      "required": ["id", "orderNumber", "subtotal", "total", "paymentMethod", "status", "createdAt"]
+    },
+    "syncHeartbeat": {
+      "title": "SyncHeartbeat",
+      "description": "Realtime terminal synchronization heartbeat and connection state",
+      "type": "object",
+      "properties": {
+        "terminalId": {
+          "type": "string",
+          "description": "Register terminal identifier",
+          "maxLength": 64
+        },
+        "cashierEmail": {
+          "type": "string",
+          "description": "Active cashier email",
+          "maxLength": 128
+        },
+        "lastPing": {
+          "type": "string",
+          "description": "Last heartbeat timestamp"
+        },
+        "activeCartItemsCount": {
+          "type": "number",
+          "description": "Items in active cashier cart"
+        },
+        "status": {
+          "type": "string",
+          "description": "Terminal status online/idle/checkout",
+          "maxLength": 32
+        }
+      },
+      "required": ["terminalId", "cashierEmail", "lastPing", "status"]
+    }
+  },
+  "firestore": {
+    "/products/{productId}": {
+      "schema": {
+        "$ref": "#/entities/product"
+      },
+      "description": "Store inventory products list with real-time stock sync"
+    },
+    "/orders/{orderId}": {
+      "schema": {
+        "$ref": "#/entities/order"
+      },
+      "description": "Completed transactions and sales history"
+    },
+    "/syncHeartbeats/{terminalId}": {
+      "schema": {
+        "$ref": "#/entities/syncHeartbeat"
+      },
+      "description": "Live status and real-time multi-terminal heartbeats"
+    }
+  }
+}

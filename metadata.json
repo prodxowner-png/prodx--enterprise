@@ -1,0 +1,6 @@
+{
+  "name": "PRODX-POS Cloud Realtime",
+  "description": "ระบบขายหน้าร้าน Point of Sale เชื่อมต่อ Firebase และระบบซิงค์ข้อมูล Realtime Database สต็อกสินค้า คำสั่งซื้อ และสถานะจุดขายแบบสด",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
